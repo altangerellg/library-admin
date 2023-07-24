@@ -81,7 +81,7 @@ const Book: FC<BookProps> = ({ isbn, name, coverUrl, description, _id, fetchBook
                         {description.slice(0, 100)}...
                     </Typography>
                 )}
-                <Button variant="outlined" onClick={() => router.push("/dashboard/book/detail")}>
+                <Button variant="outlined" onClick={() => router.push("/dashboard/book/detail/" + _id)}>
                     Show More
                 </Button>
                 <IconButton>

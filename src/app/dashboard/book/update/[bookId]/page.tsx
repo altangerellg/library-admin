@@ -53,10 +53,13 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
             name: "",
             author: "",
             publicationDate: new Date(),
-            category: "hello",
+            categories: "",
             description: "",
             coverUrl: "",
             filePath: "",
+            summary: "",
+            isFeatured: "YES",
+            format: "PDF",
         },
         validationSchema: yup.object({
             isbn: yup.string().required("Заавал оруулна уу"),
@@ -78,10 +81,13 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
                     name: data.name,
                     author: data.author,
                     publicationDate: data.publicationDate,
-                    category: data.category,
+                    categories: data.categories,
                     description: data.description,
                     coverUrl: data.coverUrl,
                     filePath: data.filePath,
+                    summary: data.summary,
+                    isFeatured: data.isFeatured,
+                    format: data.format,
                 });
             }
         } catch (error: any) {

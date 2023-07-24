@@ -6,6 +6,9 @@ export default interface IUSer {
     coverUrl: String;
     description: String;
     filePath: String;
-    //category: String;
+    summary: String;
+    isFeatured: "YES" | "NO";
+    format: "PDF" | "EPUB";
+    categories: String;
     [key: string]: any;
 }

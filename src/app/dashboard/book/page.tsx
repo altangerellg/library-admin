@@ -25,10 +25,10 @@ const BookPage: FC<any> = () => {
     const [books, setBooks] = useState<Array<IBook>>([]);
     const router = useRouter();
     const [page, setPage] = useState<number>(0);
-    const [size, setSize] = useState<number>(100);
+    const [size, setSize] = useState<number>(40);
     const [totalPage, setTotalPage] = useState<number>(1);
-    const [pubStartDate, setPubStartDate] = useState<Date | null>(null);
-    const [pubEndDate, setPubEndDate] = useState<Date | null>(null);
+    const [pubStartDate, setPubStartDate] = useState<Date | null>();
+    const [pubEndDate, setPubEndDate] = useState<Date | null>();
 
     const fetchBooks = async (values: any) => {
         try {
@@ -85,7 +85,14 @@ const BookPage: FC<any> = () => {
                                 label="Эхлэх огноо"
                                 value={pubStartDate}
                                 onChange={(date) => setPubStartDate(date)}
-                                size="small"
+                                renderInput={(
+                                    params: React.JSX.IntrinsicAttributes & {
+                                        variant?: TextFieldVariants | undefined;
+                                    } & Omit<
+                                            OutlinedTextFieldProps | FilledTextFieldProps | StandardTextFieldProps,
+                                            "variant"
+                                        >
+                                ) => <TextField {...params} size="small" />}
                             />
                         </Grid>
                         <Grid item xs={6} lg={3}>
