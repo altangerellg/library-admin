@@ -10,19 +10,40 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { useRouter } from "next/navigation";
 import * as yup from "yup";
 import { IBook } from "@library/types";
+import CardContent from "@mui/material/CardContent";
+import Image from "next/image";
+
 const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
     const router = useRouter();
+    const [book, setBook] = useState<IBook>();
+    const [file, setFile] = useState<File>();
     const bookId = params.bookId;
-    const [category, setCategory] = useState<Array<IBook>>([]);
+
     const onFileChange = (event: any) => {
         setFile(event.target.files[0]);
     };
+
     const onSubmit = async (values: IBook) => {
+        const formData = new FormData();
+        if (file !== undefined) {
+            formData.append("files", file);
+        }
         try {
-            await axios.put("/api/book/" + bookId, values);
-            toast.success("Book updated");
+            const response = await axios.post("/api/file/upload", formData);
+            if (file === undefined) {
+                values.coverUrl = book ? book.coverUrl : "";
+                values.filePath = book ? book.filePath : "";
+            } else {
+                values.coverUrl = response.data.files[0].filename;
+                values.filePath = response.data.files[0].filename;
+            }
+            await axios.put("/api/book/" + bookId, {
+                ...values,
+            });
+            toast.success("YES SIR Updated");
             router.push("/dashboard/book");
         } catch (error: any) {
+            console.log("Error:", error);
             toast.error(error.response ? error.response.data.message : "Алдаа гарлаа");
         }
     };
@@ -32,7 +53,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
             name: "",
             author: "",
             publicationDate: new Date(),
-            category: "",
+            category: "hello",
             description: "",
             coverUrl: "",
             filePath: "",
@@ -50,6 +71,8 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
             const response = await axios.get("/api/book/find/" + bookId);
             if (response.status === 200) {
                 const data = response.data ? response.data._doc : {};
+                setBook(data);
+                console.log(data);
                 form.setValues({
                     isbn: data.isbn,
                     name: data.name,
@@ -67,12 +90,13 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
     };
     useEffect(() => {
         fetchData();
+        //eslint-disable-next-line
     }, []);
     return (
         <Grid container spacing={2} item xs={12}>
             <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography>Номын мэдээлэл шинэчлэх</Typography>
+                    <Typography>Хэрэглэгчийн мэдээлэл шинэчлэх</Typography>
                     <Button variant="contained" onClick={() => router.back()} startIcon={<ArrowLeft />}>
                         Буцах
                     </Button>
@@ -113,16 +137,16 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
                             value={form.values.author}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6} lg={2}>
-                        {category.length > 0 ? (
-                            <TextField fullWidth select label="category" name="category" onChange={form.handleChange}>
-                                {category.map((c: IBook, index: number) => (
-                                    <MenuItem key={index} value={c.name}>
-                                        {c.name}
-                                    </MenuItem>
-                                ))}
-                            </TextField>
-                        ) : null}
+                    <Grid item xs={12} md={6} lg={4}>
+                        <TextField
+                            fullWidth
+                            name="category"
+                            label="category"
+                            onChange={form.handleChange}
+                            error={Boolean(form.errors.category)}
+                            helperText={form.errors.category}
+                            value={form.values.category}
+                        />
                     </Grid>
                     <Grid item xs={12} md={6} lg={4}>
                         <TextField
@@ -136,13 +160,26 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
                         />
                     </Grid>
                     <Grid item xs={12} md={6} lg={3}>
-                        <div>
-                            <form action="/api/file/upload" method="post" encType="multipart/form-data">
-                                <input type="file" name="coverUrl" onChange={onFileChange} />
-                            </form>{" "}
-                        </div>
+                        <form action="/api/file/upload" method="post" encType="multipart/form-data">
+                            <input type="file" name="files" onChange={onFileChange} />
+                        </form>{" "}
                     </Grid>
-                    <Grid item align="right" xs={12}>
+                    <CardContent
+                        style={{
+                            width: "120px",
+                            height: "240px",
+                            justifyContent: "flex-start",
+                            alignItems: "center",
+                        }}
+                    >
+                        <Image
+                            width="150"
+                            height="100"
+                            alt={form.values.name}
+                            src={"/public/uploads/" + form.values.coverUrl}
+                        />
+                    </CardContent>
+                    <Grid item display="flex" justifyContent="flex-end" xs={12}>
                         <LoadingButton
                             loading={form.isSubmitting}
                             variant="contained"
@@ -158,6 +195,3 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
     );
 };
 export default UpdatePage;
-function setFile(arg0: any) {
-    throw new Error("Function not implemented.");
-}
