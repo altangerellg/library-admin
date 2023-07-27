@@ -78,6 +78,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { userId: string } }) => {
 
     useEffect(() => {
         fetchData();
+        //eslint-disable-next-line
     }, []);
 
     return (

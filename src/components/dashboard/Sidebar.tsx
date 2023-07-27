@@ -37,6 +37,12 @@ const Sidebar: FC<any> = (props) => {
                 </ListItemIcon>
                 <ListItemText>Category</ListItemText>
             </MenuItem>
+            <MenuItem onClick={() => router.push("/dashboard/author")}>
+                <ListItemIcon>
+                    <CategoryIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Author</ListItemText>
+            </MenuItem>
         </MenuList>
     );
 };
