@@ -14,6 +14,7 @@ import CardContent from "@mui/material/CardContent";
 import { useRouter } from "next/navigation";
 import { Delete, Edit } from "@mui/icons-material";
 import axios from "axios";
+import { IBook } from "@library/types";
 
 interface BookProps {
     isbn: string;
@@ -33,6 +34,7 @@ const Book: FC<BookProps> = ({ isbn, name, coverUrl, description, _id, fetchBook
         setSelectedBook(bookId);
         setOpen(true);
     };
+    const [books, setbooks] = useState<Array<IBook>>([]);
 
     const [open, setOpen] = React.useState(false);
 
@@ -79,7 +81,7 @@ const Book: FC<BookProps> = ({ isbn, name, coverUrl, description, _id, fetchBook
                         {description.slice(0, 100)}...
                     </Typography>
                 )}
-                <Button variant="outlined" onClick={() => router.push("/dashboard/book/detail")}>
+                <Button variant="outlined" onClick={() => router.push("/dashboard/book/detail/" + _id)}>
                     Show More
                 </Button>
                 <IconButton>
