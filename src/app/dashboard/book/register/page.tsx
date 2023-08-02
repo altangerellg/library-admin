@@ -11,6 +11,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import * as yup from "yup";
 import IBook from "@library/types/IBook";
 import ICategory from "@library/types/ICategory";
+import IAuthor from "@library/types/IAuthor";
 
 const RegisterPage: FC<any> = () => {
     const router = useRouter();
@@ -18,6 +19,7 @@ const RegisterPage: FC<any> = () => {
     const [file, setFile] = useState<File>();
     const [cover, setCover] = useState<File>();
     const [categories, setCategory] = useState<Array<ICategory>>([]);
+    const [authors,setAuthors] = useState<Array<IAuthor>>([])
 
     const onFileChange = (event: any, type: string) => {
         if (type === "file") setFile(event.target.files[0]);
@@ -32,8 +34,20 @@ const RegisterPage: FC<any> = () => {
             toast.error(error.response ? error.response.data.message : "Алдаа гарлаа");
         }
     };
+
+    const fetchAuthor = async () =>{
+        try{
+            const response = await axios.post("/api/author/find/",{});
+            setAuthors(response.data.content);
+            console.log(response.data.content);
+        }catch(error:any){
+            toast.error(error.response ? error.response.data.message : "Алдаа гарлаа")
+        }
+    }
+
     useEffect(() => {
         fetchCategory();
+        fetchAuthor();
         //eslint-disable-next-line
     }, []);
 
@@ -82,7 +96,6 @@ const RegisterPage: FC<any> = () => {
         validationSchema: yup.object({
             isbn: yup.string().required("Заавал оруулна уу"),
             name: yup.string().required("Заавал оруулна уу"),
-            author: yup.string().required("Заавал оруулна уу"),
             description: yup.string().required("Заавал оруулна уу"),
             isFeatured: yup.string().required("Заавал сонгоно уу"),
             format: yup.string().required("Төрөл сонгоно уу"),
@@ -125,15 +138,27 @@ const RegisterPage: FC<any> = () => {
                         />
                     </Grid>
                     <Grid item xs={12} md={6} lg={4}>
-                        <TextField
-                            fullWidth
-                            name="author"
-                            label="Зохиолч"
-                            onChange={form.handleChange}
-                            error={Boolean(form.errors.author)}
-                            helperText={form.errors.author}
-                            value={form.values.author}
+                        <Autocomplete
+                            
+                            getOptionLabel={(option: IAuthor) => option.firstname}
+                            options={authors}
+                            onChange={(e, value) =>{
+                                form.setFieldValue(
+                                    "author",
+                                    value ? value._id : "")
+                                }
+                            }
+                            
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    label="Зохиолч"
+                                    // placeholder="Favorites"
+                                />
+                            )}
                         />
+                    
                     </Grid>
                     <Grid item xs={12} md={6} lg={2}>
                         <DatePicker
