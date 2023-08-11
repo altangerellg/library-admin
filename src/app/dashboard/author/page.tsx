@@ -69,7 +69,6 @@ const AuthorPage: FC<any> = () => {
     };
     const deleteAuthor = useCallback(
         async (authorId: string) => {
-            console.log(authorId);
             try {
                 await axios.delete(`/api/author/${selectedAuthor}`); //temdeglegdsen idg selected duudaj avna
                 fetchAuthors({});
