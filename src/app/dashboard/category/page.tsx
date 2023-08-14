@@ -29,10 +29,9 @@ import axios from "axios";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import React, { FC, useCallback, useEffect, useState } from "react";
-import toast from "react-hot-toast";
 import ICategory from "@library/types/ICategory";
 
-const RegisterPage: FC<any> = () => {
+const CategoryPage: FC<any> = () => {
     const router = useRouter();
     const [categories, setCategory] = useState<Array<ICategory>>([]);
     const [selectedCategory, setSelectedCategory] = useState<string | null>(null); //user iin idg end avna
@@ -217,7 +216,7 @@ const RegisterPage: FC<any> = () => {
     );
 };
 
-export default RegisterPage;
+export default CategoryPage;
 function setSelectedCategory(categoryId: string) {
     throw new Error("Function not implemented.");
 }

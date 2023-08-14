@@ -19,7 +19,7 @@ const RegisterPage: FC<any> = () => {
     const [file, setFile] = useState<File>();
     const [cover, setCover] = useState<File>();
     const [categories, setCategory] = useState<Array<ICategory>>([]);
-    const [authors,setAuthors] = useState<Array<IAuthor>>([])
+    const [authors, setAuthors] = useState<Array<IAuthor>>([]);
 
     const onFileChange = (event: any, type: string) => {
         if (type === "file") setFile(event.target.files[0]);
@@ -35,15 +35,15 @@ const RegisterPage: FC<any> = () => {
         }
     };
 
-    const fetchAuthor = async () =>{
-        try{
-            const response = await axios.post("/api/author/find/",{});
+    const fetchAuthor = async () => {
+        try {
+            const response = await axios.post("/api/author/find/", {});
             setAuthors(response.data.content);
             console.log(response.data.content);
-        }catch(error:any){
-            toast.error(error.response ? error.response.data.message : "Алдаа гарлаа")
+        } catch (error: any) {
+            toast.error(error.response ? error.response.data.message : "Алдаа гарлаа");
         }
-    }
+    };
 
     useEffect(() => {
         fetchCategory();
@@ -139,16 +139,11 @@ const RegisterPage: FC<any> = () => {
                     </Grid>
                     <Grid item xs={12} md={6} lg={4}>
                         <Autocomplete
-                            
                             getOptionLabel={(option: IAuthor) => option.firstname}
                             options={authors}
-                            onChange={(e, value) =>{
-                                form.setFieldValue(
-                                    "author",
-                                    value ? value._id : "")
-                                }
-                            }
-                            
+                            onChange={(e, value) => {
+                                form.setFieldValue("author", value ? value._id : "");
+                            }}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -158,7 +153,6 @@ const RegisterPage: FC<any> = () => {
                                 />
                             )}
                         />
-                    
                     </Grid>
                     <Grid item xs={12} md={6} lg={2}>
                         <DatePicker
@@ -178,18 +172,9 @@ const RegisterPage: FC<any> = () => {
                                     value.map((e) => e._id)
                                 )
                             }
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    variant="outlined"
-                                    label="Ангилал"
-                                    // placeholder="Favorites"
-                                />
-                            )}
+                            renderInput={(params) => <TextField {...params} variant="outlined" label="Ангилал" />}
                         />
                     </Grid>
-
-                   
 
                     <Grid item xs={12} md={6} lg={2}>
                         <TextField

@@ -7,6 +7,7 @@ import PersonIcon from "@mui/icons-material/Person";
 import AdminPanelSettingsIcon from "@mui/icons-material/AdminPanelSettings";
 import BookIcon from "@mui/icons-material/Book";
 import CategoryIcon from "@mui/icons-material/Category";
+import CollectionsIcon from "@mui/icons-material/Collections";
 
 const Sidebar: FC<any> = (props) => {
     const { user } = useSession();
@@ -39,9 +40,15 @@ const Sidebar: FC<any> = (props) => {
             </MenuItem>
             <MenuItem onClick={() => router.push("/dashboard/author")}>
                 <ListItemIcon>
-                    <CategoryIcon fontSize="small" />
+                    <PersonIcon fontSize="small" />
                 </ListItemIcon>
                 <ListItemText>Author</ListItemText>
+            </MenuItem>
+            <MenuItem onClick={() => router.push("/dashboard/collection")}>
+                <ListItemIcon>
+                    <CollectionsIcon fontSize="small" />
+                </ListItemIcon>
+                <ListItemText>Collection</ListItemText>
             </MenuItem>
         </MenuList>
     );

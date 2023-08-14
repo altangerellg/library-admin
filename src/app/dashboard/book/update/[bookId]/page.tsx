@@ -46,7 +46,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
             router.push("/dashboard/book");
         } catch (error: any) {
             console.log("Error:", error);
-            toast.error(error.response ? error.response.data.message : "Алдаа гарлаа");
+            toast.error(error.response ? error.response.data.message : error);
         }
     };
     const form = useFormik({
@@ -73,14 +73,16 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
     });
     const fetchData = async () => {
         try {
+            const categery = await axios.post("/api/category/find?size=10000", {});
+            setCategory(categery.data.content);
             const response = await axios.get("/api/book/find/" + bookId);
             if (response.status === 200) {
-                const data = response.data ? response.data._doc : {};
+                const data = response.data ? response.data : {};
                 setBook(data);
                 form.setValues({
                     isbn: data.isbn,
                     name: data.name,
-                    author: data.author,
+                    author: data.author.lastname,
                     publicationDate: data.publicationDate,
                     categories: data.categories,
                     description: data.description,
@@ -141,7 +143,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
                             onChange={form.handleChange}
                             error={Boolean(form.errors.author)}
                             helperText={form.errors.author}
-                            value={form.values.author}
+                            value={JSON.stringify(form.values.author)}
                         />
                     </Grid>
                     <Grid item xs={12} md={6}>
@@ -149,19 +151,13 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
                             multiple
                             getOptionLabel={(option: ICategory) => option.name}
                             options={categories}
-                            onChange={(e, value) =>
-                                form.setFieldValue(
-                                    "categories",
-                                    value.map((e) => e._id)
-                                )
-                            }
+                            onChange={(e, value) => form.setFieldValue("categories", value)}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
                                     variant="outlined"
                                     label="Ангилал"
                                     value={form.values.categories}
-                                    // placeholder="Favorites"
                                 />
                             )}
                         />
