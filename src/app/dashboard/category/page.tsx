@@ -68,8 +68,9 @@ const CategoryPage: FC<any> = () => {
 
     const form = useFormik({
         initialValues: {
+            _id: "",
             name: "",
-            parent: "",
+            parent: undefined,
             description: "",
         },
 
@@ -148,7 +149,7 @@ const CategoryPage: FC<any> = () => {
                             {categories.map((category: ICategory, index: number) => (
                                 <TableRow key={index}>
                                     <TableCell>{category._id}</TableCell>
-                                    <TableCell>{category.parent}</TableCell>
+                                    <TableCell>{category.parent ? JSON.stringify(category.parent) : ""}</TableCell>
                                     <TableCell>{category.name}</TableCell>
 
                                     <TableCell>

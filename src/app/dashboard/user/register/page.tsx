@@ -97,7 +97,9 @@ const RegisterPage: FC<any> = () => {
                             label="РД"
                             onChange={form.handleChange}
                             error={Boolean(form.errors.registrationNumber)}
-                            helperText={form.errors.registrationNumber}
+                            helperText={
+                                form.errors.registrationNumber ? JSON.stringify(form.errors.registrationNumber) : ""
+                            }
                             value={form.values.registrationNumber}
                         />
                     </Grid>
@@ -145,11 +147,11 @@ const RegisterPage: FC<any> = () => {
                             label="Нууц үг"
                             onChange={form.handleChange}
                             error={Boolean(form.errors.password)}
-                            helperText={form.errors.password}
+                            helperText={form.errors.password ? JSON.stringify(form.errors.password) : ""}
                             value={form.values.password}
                         />
                     </Grid>
-                    <Grid item align="right" xs={12}>
+                    <Grid item xs={12}>
                         <LoadingButton
                             loading={form.isSubmitting}
                             variant="contained"

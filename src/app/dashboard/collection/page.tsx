@@ -21,6 +21,7 @@ import {
     Typography,
 } from "@mui/material";
 import { ArrowLeft } from "@mui/icons-material";
+import { IBook } from "@library/types";
 
 const CollectionPage: FC<any> = () => {
     const router = useRouter();
@@ -72,9 +73,7 @@ const CollectionPage: FC<any> = () => {
                                 <TableRow key={index}>
                                     <TableCell>{collection._id}</TableCell>
                                     <TableCell>{collection.name}</TableCell>
-                                    <TableCell>
-                                        {collection.books.map((book: { name: string }) => book.name).join(", ")}
-                                    </TableCell>
+                                    <TableCell>{collection.books.map((book: IBook) => book.name).join(", ")}</TableCell>
                                     <TableCell>{JSON.stringify(collection.createdUser.lastname)}</TableCell>
                                     <TableCell>{collection.likes}</TableCell>
                                     <TableCell>{collection.date}</TableCell>

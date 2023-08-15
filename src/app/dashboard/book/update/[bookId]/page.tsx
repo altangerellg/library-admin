@@ -152,7 +152,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
                     <Grid item xs={12} md={6}>
                         <Autocomplete
                             multiple
-                            getOptionLabel={(option: ICategory) => option.name}
+                            getOptionLabel={(option: ICategory) => option.name || ""}
                             options={categories}
                             onChange={(e, value) => form.setFieldValue("categories", value)}
                             renderInput={(params) => (
@@ -191,7 +191,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
                             label="Товч"
                             onChange={form.handleChange}
                             error={Boolean(form.errors.summary)}
-                            helperText={form.errors.summary}
+                            helperText={form.errors.summary ? JSON.stringify(form.errors.summary) : ""}
                             value={form.values.summary}
                         />
                     </Grid>
@@ -204,7 +204,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
                             label="Тайлбар"
                             onChange={form.handleChange}
                             error={Boolean(form.errors.description)}
-                            helperText={form.errors.description}
+                            helperText={form.errors.description ? JSON.stringify(form.errors.summary) : ""}
                             value={form.values.description}
                         />
                     </Grid>

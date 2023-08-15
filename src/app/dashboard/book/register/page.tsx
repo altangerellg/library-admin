@@ -55,13 +55,13 @@ const RegisterPage: FC<any> = () => {
         if (file !== undefined || cover !== undefined) {
             try {
                 let formData = new FormData();
-                formData.append("files", file);
+                file && formData.append("files", file);
                 // formData.append("files", cover);
                 let responseFile = await axios.post("/api/file/upload", formData);
                 const filePath = responseFile.data.files[0].filename;
 
                 let formDataCover = new FormData();
-                formDataCover.append("files", cover);
+                cover && formDataCover.append("files", cover);
                 let responseCover = await axios.post("/api/file/upload", formDataCover);
 
                 const coverUrl = responseCover.data.files[0].filename;
@@ -74,6 +74,8 @@ const RegisterPage: FC<any> = () => {
                 toast.success("YES SIR");
                 router.push("/dashboard/book");
             } catch (error: any) {
+                console.log(FormData);
+
                 toast.error(error.response ? error.response.data.message : "Алдаа гарлаа");
             }
         }
@@ -164,7 +166,7 @@ const RegisterPage: FC<any> = () => {
                     <Grid item xs={12} md={6}>
                         <Autocomplete
                             multiple
-                            getOptionLabel={(option: ICategory) => option.name}
+                            getOptionLabel={(option: ICategory) => option.name || ""}
                             options={categories}
                             onChange={(e, value) =>
                                 form.setFieldValue(
@@ -212,7 +214,7 @@ const RegisterPage: FC<any> = () => {
                             label="Товч"
                             onChange={form.handleChange}
                             error={Boolean(form.errors.summary)}
-                            helperText={form.errors.summary}
+                            helperText={form.errors.summary ? JSON.stringify(form.errors.summary) : ""}
                             value={form.values.summary}
                         />
                     </Grid>
@@ -225,7 +227,7 @@ const RegisterPage: FC<any> = () => {
                             label="Тайлбар"
                             onChange={form.handleChange}
                             error={Boolean(form.errors.description)}
-                            helperText={form.errors.description}
+                            helperText={form.errors.description ? JSON.stringify(form.errors.description) : ""}
                             value={form.values.description}
                         />
                     </Grid>

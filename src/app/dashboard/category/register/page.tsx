@@ -32,9 +32,11 @@ const RegisterPage: FC<any> = () => {
 
     const onSubmit = async (values: ICategory) => {
         try {
+            console.log(values);
             await axios.post("/api/category/", {
-                ...values,
-                parent: values.parent.length > 0 ? values.parent : undefined,
+                name: values.name,
+                description: values.description,
+                parent: values.parent?.length > 0 ? values.parent : undefined,
             });
             toast.success("Амжилттай");
             router.push("/dashboard/category");
@@ -44,8 +46,9 @@ const RegisterPage: FC<any> = () => {
     };
     const form = useFormik({
         initialValues: {
+            _id: "",
             name: "",
-            parent: "",
+            parent: undefined,
             description: "",
         },
         validationSchema: yup.object({
@@ -72,7 +75,7 @@ const RegisterPage: FC<any> = () => {
                 <Grid container item spacing={2}>
                     <Grid item xs={12} md={6} lg={6}>
                         <Autocomplete
-                            getOptionLabel={(option: ICategory) => option.name}
+                            getOptionLabel={(option: ICategory) => option.name || ""}
                             options={categories}
                             onChange={(e, value) => form.setFieldValue("parent", value?._id)}
                             renderInput={(params) => (

@@ -119,7 +119,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { authorId: string } }) => {
                     <Grid item xs={12} md={6} lg={3}>
                         <input type="file" name="image" accept="image/*" onChange={onFileChange} />
                     </Grid>
-                    <Grid item align="right" xs={12}>
+                    <Grid item xs={12}>
                         <LoadingButton
                             loading={form.isSubmitting}
                             variant="contained"
