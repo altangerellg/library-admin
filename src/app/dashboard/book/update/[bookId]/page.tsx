@@ -19,6 +19,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
     const [book, setBook] = useState<IBook>();
     const [file, setFile] = useState<File>();
     const bookId = params.bookId;
+
     const [categories, setCategory] = useState<Array<ICategory>>([]);
 
     const onFileChange = (event: any) => {
@@ -76,9 +77,11 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
             const categery = await axios.post("/api/category/find?size=10000", {});
             setCategory(categery.data.content);
             const response = await axios.get("/api/book/find/" + bookId);
+
             if (response.status === 200) {
                 const data = response.data ? response.data : {};
                 setBook(data);
+
                 form.setValues({
                     isbn: data.isbn,
                     name: data.name,
