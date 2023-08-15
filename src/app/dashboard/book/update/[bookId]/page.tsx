@@ -1,7 +1,7 @@
 "use client";
 import { ArrowLeft, SaveOutlined } from "@mui/icons-material";
 import { LoadingButton } from "@mui/lab";
-import { Box, Button, Grid, MenuItem, TextField, Typography } from "@mui/material";
+import { Autocomplete, Box, Button, Grid, MenuItem, TextField, Typography } from "@mui/material";
 import axios from "axios";
 import { useFormik } from "formik";
 import React, { FC, useEffect, useState } from "react";
@@ -12,12 +12,15 @@ import * as yup from "yup";
 import { IBook } from "@library/types";
 import CardContent from "@mui/material/CardContent";
 import Image from "next/image";
+import ICategory from "@library/types/ICategory";
 
 const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
     const router = useRouter();
     const [book, setBook] = useState<IBook>();
     const [file, setFile] = useState<File>();
     const bookId = params.bookId;
+
+    const [categories, setCategory] = useState<Array<ICategory>>([]);
 
     const onFileChange = (event: any) => {
         setFile(event.target.files[0]);
@@ -44,7 +47,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
             router.push("/dashboard/book");
         } catch (error: any) {
             console.log("Error:", error);
-            toast.error(error.response ? error.response.data.message : "Алдаа гарлаа");
+            toast.error(error.response ? error.response.data.message : error);
         }
     };
     const form = useFormik({
@@ -71,15 +74,18 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
     });
     const fetchData = async () => {
         try {
+            const categery = await axios.post("/api/category/find?size=10000", {});
+            setCategory(categery.data.content);
             const response = await axios.get("/api/book/find/" + bookId);
+
             if (response.status === 200) {
-                const data = response.data ? response.data._doc : {};
+                const data = response.data ? response.data : {};
                 setBook(data);
-                console.log(data);
+
                 form.setValues({
                     isbn: data.isbn,
                     name: data.name,
-                    author: data.author,
+                    author: data.author.lastname,
                     publicationDate: data.publicationDate,
                     categories: data.categories,
                     description: data.description,
@@ -102,7 +108,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
         <Grid container spacing={2} item xs={12}>
             <Grid item xs={12}>
                 <Box display="flex" justifyContent="space-between" alignItems="center">
-                    <Typography>Хэрэглэгчийн мэдээлэл шинэчлэх</Typography>
+                    <Typography>Номын мэдээлэл шинэчлэх</Typography>
                     <Button variant="contained" onClick={() => router.back()} startIcon={<ArrowLeft />}>
                         Буцах
                     </Button>
@@ -140,28 +146,65 @@ const UpdatePage: FC<any> = ({ params }: { params: { bookId: string } }) => {
                             onChange={form.handleChange}
                             error={Boolean(form.errors.author)}
                             helperText={form.errors.author}
-                            value={form.values.author}
+                            value={JSON.stringify(form.values.author)}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6} lg={4}>
+                    <Grid item xs={12} md={6}>
+                        <Autocomplete
+                            multiple
+                            getOptionLabel={(option: ICategory) => option.name || ""}
+                            options={categories}
+                            onChange={(e, value) => form.setFieldValue("categories", value)}
+                            renderInput={(params) => (
+                                <TextField
+                                    {...params}
+                                    variant="outlined"
+                                    label="Ангилал"
+                                    value={form.values.categories}
+                                />
+                            )}
+                        />
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={2}>
                         <TextField
                             fullWidth
-                            name="category"
-                            label="category"
+                            select
+                            name="isFeatured"
+                            label="Is this Featured?"
                             onChange={form.handleChange}
-                            error={Boolean(form.errors.category)}
-                            helperText={form.errors.category}
-                            value={form.values.category}
+                        >
+                            <MenuItem value="YES">Тийм</MenuItem>
+                            <MenuItem value="NO">Үгүй</MenuItem>
+                        </TextField>
+                    </Grid>
+                    <Grid item xs={12} md={6} lg={2}>
+                        <TextField fullWidth select name="format" label="Format" onChange={form.handleChange}>
+                            <MenuItem value="PDF">PDF</MenuItem>
+                            <MenuItem value="EPUB">EPUB</MenuItem>
+                        </TextField>
+                    </Grid>
+                    <Grid item xs={12}>
+                        <TextField
+                            multiline
+                            fullWidth
+                            name="summary"
+                            label="Товч"
+                            onChange={form.handleChange}
+                            error={Boolean(form.errors.summary)}
+                            helperText={form.errors.summary ? JSON.stringify(form.errors.summary) : ""}
+                            value={form.values.summary}
                         />
                     </Grid>
-                    <Grid item xs={12} md={6} lg={4}>
+                    <Grid item xs={12}>
                         <TextField
+                            multiline
                             fullWidth
+                            rows={6}
                             name="description"
                             label="Тайлбар"
                             onChange={form.handleChange}
                             error={Boolean(form.errors.description)}
-                            helperText={form.errors.description}
+                            helperText={form.errors.description ? JSON.stringify(form.errors.summary) : ""}
                             value={form.values.description}
                         />
                     </Grid>

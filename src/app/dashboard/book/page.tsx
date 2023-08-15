@@ -19,7 +19,15 @@ import { AddOutlined, SearchOutlined } from "@mui/icons-material";
 import { useFormik } from "formik";
 import { useRouter } from "next/navigation";
 import { IBook } from "@library/types";
-import { DatePicker } from "@mui/x-date-pickers";
+import { DatePicker, DatePicker as MuiDatePicker } from "@mui/lab";
+
+interface ExtendedDatePickerProps {
+    renderInput: (
+        params: React.JSX.IntrinsicAttributes & {
+            variant?: TextFieldVariants | undefined;
+        } & Omit<OutlinedTextFieldProps | FilledTextFieldProps | StandardTextFieldProps, "variant">
+    ) => JSX.Element;
+}
 
 const BookPage: FC<any> = () => {
     const [books, setBooks] = useState<Array<IBook>>([]);
@@ -29,6 +37,18 @@ const BookPage: FC<any> = () => {
     const [totalPage, setTotalPage] = useState<number>(1);
     const [pubStartDate, setPubStartDate] = useState<Date | null>();
     const [pubEndDate, setPubEndDate] = useState<Date | null>();
+
+    // const DatePicker: React.FC<ExtendedDatePickerProps> = ({
+    //     renderInput,
+    //     ...otherProps
+    //   }) => {
+    //     return (
+    //       <MuiDatePicker
+    //         {...otherProps}
+    //         renderInput={renderInput}
+    //       />
+    //     );
+    //   };
 
     const fetchBooks = async (values: any) => {
         try {
@@ -80,11 +100,13 @@ const BookPage: FC<any> = () => {
                                 onChange={form.handleChange}
                             />
                         </Grid>
-                        <Grid item xs={6} lg={3}>
+                        {/* <Grid item xs={6} lg={3}>
                             <DatePicker
                                 label="Эхлэх огноо"
                                 value={pubStartDate}
-                                onChange={(date) => setPubStartDate(date)}
+                                onChange={(date: React.SetStateAction<Date | null | undefined>) =>
+                                    setPubStartDate(date)
+                                }
                                 renderInput={(
                                     params: React.JSX.IntrinsicAttributes & {
                                         variant?: TextFieldVariants | undefined;
@@ -99,7 +121,7 @@ const BookPage: FC<any> = () => {
                             <DatePicker
                                 label="Дуусах огноо"
                                 value={pubEndDate}
-                                onChange={(date) => setPubEndDate(date)}
+                                onChange={(date: React.SetStateAction<Date | null | undefined>) => setPubEndDate(date)}
                                 renderInput={(
                                     params: React.JSX.IntrinsicAttributes & {
                                         variant?: TextFieldVariants | undefined;
@@ -109,7 +131,7 @@ const BookPage: FC<any> = () => {
                                         >
                                 ) => <TextField {...params} size="small" />}
                             />
-                        </Grid>
+                        </Grid> */}
                         <Grid item xs={4} lg={3} container spacing={3}>
                             <Button size="small" startIcon={<SearchOutlined />} type="submit">
                                 Хайх

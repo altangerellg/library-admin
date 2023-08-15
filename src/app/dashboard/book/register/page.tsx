@@ -19,7 +19,7 @@ const RegisterPage: FC<any> = () => {
     const [file, setFile] = useState<File>();
     const [cover, setCover] = useState<File>();
     const [categories, setCategory] = useState<Array<ICategory>>([]);
-    const [authors,setAuthors] = useState<Array<IAuthor>>([])
+    const [authors, setAuthors] = useState<Array<IAuthor>>([]);
 
     const onFileChange = (event: any, type: string) => {
         if (type === "file") setFile(event.target.files[0]);
@@ -35,15 +35,15 @@ const RegisterPage: FC<any> = () => {
         }
     };
 
-    const fetchAuthor = async () =>{
-        try{
-            const response = await axios.post("/api/author/find/",{});
+    const fetchAuthor = async () => {
+        try {
+            const response = await axios.post("/api/author/find/", {});
             setAuthors(response.data.content);
             console.log(response.data.content);
-        }catch(error:any){
-            toast.error(error.response ? error.response.data.message : "Алдаа гарлаа")
+        } catch (error: any) {
+            toast.error(error.response ? error.response.data.message : "Алдаа гарлаа");
         }
-    }
+    };
 
     useEffect(() => {
         fetchCategory();
@@ -55,13 +55,13 @@ const RegisterPage: FC<any> = () => {
         if (file !== undefined || cover !== undefined) {
             try {
                 let formData = new FormData();
-                formData.append("files", file);
+                file && formData.append("files", file);
                 // formData.append("files", cover);
                 let responseFile = await axios.post("/api/file/upload", formData);
                 const filePath = responseFile.data.files[0].filename;
 
                 let formDataCover = new FormData();
-                formDataCover.append("files", cover);
+                cover && formDataCover.append("files", cover);
                 let responseCover = await axios.post("/api/file/upload", formDataCover);
 
                 const coverUrl = responseCover.data.files[0].filename;
@@ -74,6 +74,8 @@ const RegisterPage: FC<any> = () => {
                 toast.success("YES SIR");
                 router.push("/dashboard/book");
             } catch (error: any) {
+                console.log(FormData);
+
                 toast.error(error.response ? error.response.data.message : "Алдаа гарлаа");
             }
         }
@@ -139,16 +141,11 @@ const RegisterPage: FC<any> = () => {
                     </Grid>
                     <Grid item xs={12} md={6} lg={4}>
                         <Autocomplete
-                            
                             getOptionLabel={(option: IAuthor) => option.firstname}
                             options={authors}
-                            onChange={(e, value) =>{
-                                form.setFieldValue(
-                                    "author",
-                                    value ? value._id : "")
-                                }
-                            }
-                            
+                            onChange={(e, value) => {
+                                form.setFieldValue("author", value ? value._id : "");
+                            }}
                             renderInput={(params) => (
                                 <TextField
                                     {...params}
@@ -158,7 +155,6 @@ const RegisterPage: FC<any> = () => {
                                 />
                             )}
                         />
-                    
                     </Grid>
                     <Grid item xs={12} md={6} lg={2}>
                         <DatePicker
@@ -170,7 +166,7 @@ const RegisterPage: FC<any> = () => {
                     <Grid item xs={12} md={6}>
                         <Autocomplete
                             multiple
-                            getOptionLabel={(option: ICategory) => option.name}
+                            getOptionLabel={(option: ICategory) => option.name || ""}
                             options={categories}
                             onChange={(e, value) =>
                                 form.setFieldValue(
@@ -178,18 +174,9 @@ const RegisterPage: FC<any> = () => {
                                     value.map((e) => e._id)
                                 )
                             }
-                            renderInput={(params) => (
-                                <TextField
-                                    {...params}
-                                    variant="outlined"
-                                    label="Ангилал"
-                                    // placeholder="Favorites"
-                                />
-                            )}
+                            renderInput={(params) => <TextField {...params} variant="outlined" label="Ангилал" />}
                         />
                     </Grid>
-
-                   
 
                     <Grid item xs={12} md={6} lg={2}>
                         <TextField
@@ -227,7 +214,7 @@ const RegisterPage: FC<any> = () => {
                             label="Товч"
                             onChange={form.handleChange}
                             error={Boolean(form.errors.summary)}
-                            helperText={form.errors.summary}
+                            helperText={form.errors.summary ? JSON.stringify(form.errors.summary) : ""}
                             value={form.values.summary}
                         />
                     </Grid>
@@ -240,7 +227,7 @@ const RegisterPage: FC<any> = () => {
                             label="Тайлбар"
                             onChange={form.handleChange}
                             error={Boolean(form.errors.description)}
-                            helperText={form.errors.description}
+                            helperText={form.errors.description ? JSON.stringify(form.errors.description) : ""}
                             value={form.values.description}
                         />
                     </Grid>

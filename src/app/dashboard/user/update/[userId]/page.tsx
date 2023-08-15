@@ -41,7 +41,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { userId: string } }) => {
             firstname: yup.string().required("Заавал оруулна уу"),
             lastname: yup.string().required("Заавал оруулна уу"),
             gender: yup.string().required("Хүйс сонгоно уу"),
-            email: yup.string().email("Зөв и-мэйл оруулна уу").required("Заавал оруулна уу"),
+            email: yup.string().email("Зөв и-мэйл оруулна уу").required("заавал оруулна уу"),
             registrationNumber: yup
                 .string()
                 //.matches(/r'^[\p{Script=Mongolian}]{2}\d{8}$/, "Зөв РД оруул")
@@ -60,7 +60,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { userId: string } }) => {
         try {
             const response = await axios.get("/api/user/find/" + userId);
             if (response.status === 200) {
-                const data = response.data ? response.data._doc : {};
+                const data = response.data ? response.data : {};
                 form.setValues({
                     firstname: data?.firstname,
                     lastname: data?.lastname,
@@ -122,7 +122,9 @@ const UpdatePage: FC<any> = ({ params }: { params: { userId: string } }) => {
                             label="РД"
                             onChange={form.handleChange}
                             error={Boolean(form.errors.registrationNumber)}
-                            helperText={form.errors.registrationNumber}
+                            helperText={
+                                form.errors.registrationNumber ? JSON.stringify(form.errors.registrationNumber) : ""
+                            }
                             value={form.values.registrationNumber}
                         />
                     </Grid>
@@ -162,7 +164,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { userId: string } }) => {
                             onChange={(newValue) => form.setFieldValue("birthDate", newValue)}
                         />
                     </Grid>
-                    <Grid item align="right" xs={12}>
+                    <Grid item xs={12}>
                         <LoadingButton
                             loading={form.isSubmitting}
                             variant="contained"
