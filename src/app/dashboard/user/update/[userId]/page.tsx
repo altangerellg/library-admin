@@ -41,7 +41,7 @@ const UpdatePage: FC<any> = ({ params }: { params: { userId: string } }) => {
             firstname: yup.string().required("Заавал оруулна уу"),
             lastname: yup.string().required("Заавал оруулна уу"),
             gender: yup.string().required("Хүйс сонгоно уу"),
-            email: yup.string().email("Зөв и-мэйл оруулна уу").required("Заавал оруулна уу"),
+            email: yup.string().email("Зөв и-мэйл оруулна уу").required("заавал оруулна уу"),
             registrationNumber: yup
                 .string()
                 //.matches(/r'^[\p{Script=Mongolian}]{2}\d{8}$/, "Зөв РД оруул")
